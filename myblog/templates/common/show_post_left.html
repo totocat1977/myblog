@@ -1,0 +1,47 @@
+<!-- Post list (left) -->
+<div class="row blog-row" id="{{ post_info.mbp_id }}">
+	<div class="col-sm-9 blog-post-left">
+		<div class="blog-post-title">
+			<p>{{ post_info.mbp_title }}</p>
+		</div>					
+		<div class="blog-post-datetime-auther">
+			<a href="#" class="btn btn-default btn-xs disabled" role="button">
+				<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {{ post_info.mbp_created_at|date:"Y-m-d D" }} {{ post_info.mbp_created_at|time:"H:i" }}
+			</a>
+			<a href="#" class="btn btn-default btn-xs disabled" role="button">
+				<span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ post_info.mbp_auther }}
+			</a>
+			<a href="#" class="btn btn-default btn-xs disabled" role="button">
+				<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> comment <span class="badge">{{ post_info.post_static.mbp_s_comments }}</span>
+			</a>
+		</div>
+		<div class="post-content">
+			<p>{{ post_info.mbp_summary }}<a href="#" class="btn btn-default btn-xs" role="button"><span class="glyphicon glyphicon-circle-arrow-right" aria-hidden="true"></span></a> 
+			</p>
+		</div>
+		<div>
+				<hr>
+
+		</div>
+		<div class="post-tags-left">
+			{% for t in post_info.get_all_tags %}
+			<a href='#' class="btn btn-{{ t.1 }} btn-xs" role="button">{{ t.0 }}</a>
+			{% empty %}
+			<a href='#' class="btn btn-default btn-xs disabled" role="button">none</a>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="col-sm-3 thumbnail-2l">
+	    <div style="width:2px">
+	    </div>
+		<div class="thumbnail thumbnail-3l">
+			<a href="#" alt="{{ post_info.mbp_title }}">
+				<img data-src="holder.js/180x180" alt="{{ post_info.mbp_image_caption }}">
+			</a>
+			<div class="caption text-center img_caption">
+				<h5>{{ post_info.mbp_image_caption }}</h5>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End of Post -->

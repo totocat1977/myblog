@@ -1,0 +1,132 @@
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	{% block head_title %}
+	{% endblock head_title %}
+	</head>
+	<body>
+	<!-- Fixed navbar -->
+	{% block top_navbar %}{% show_top_navbar %}{% endblock top_navbar %}
+	<!-- End of Fixed navbar -->
+    <div class="container theme-showcase" role="main">
+		<!-- Carousel slide -->
+		{% block ad_slides %}
+		{% endblock ad_slides %}
+		<!-- End of Carousel slide -->
+		<!-- Navbars -->
+		{% get_category %}
+		<!-- End of Navbars -->
+		<!-- Post Start -->
+		<div class="row">
+			<!-- Main form -->
+			<div class="col-sm-9">
+				<!-- Info Panel -->
+				{% block site_info_bar %}
+				{% endblock site_info_bar %}
+				<!-- End of Info Panel -->
+				<!-- Post summary list -->
+				{% block post_summary %}
+				<!-- if there is no post, show the below sample -->
+				<div class="row blog-row" id="section-1">
+					<div class="col-sm-9 blog-post-list">
+						<div class="blog-post-title">
+							<p class="title">This is the first post of myblog!</p>
+						</div>					
+						<div class="blog-post-datetime-auther">
+							<a href="#" class="btn btn-default btn-xs disabled" role="button">
+								<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 2018-1-21
+							</a>
+							<a href="#" class="btn btn-default btn-xs disabled" role="button">
+								<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Admin
+							</a>
+							<a href="#" class="btn btn-default btn-xs disabled" role="button">
+								<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> comment <span class="badge">0</span>
+							</a>
+						</div>
+						<div class="post-content">
+							<p>
+							Welcome to myblog! Here is my first site developed and maintained all by myself. I will record my thought, my experiences, my emotion and everything here. If you like it, you can share with your friends, otherwise if you have any ideas, please bring them to me. Nice to meet with you here! <a href="#" class="btn btn-default btn-xs" role="button"><span class="glyphicon glyphicon-circle-arrow-right" aria-hidden="true"></span></a> 
+							</p>
+						</div>
+						<div class="post-tags-left">
+							<a href="#" class="btn btn-success btn-xs" role="button">Myblog</a>
+						</div>
+						<div>
+							<p>
+								<hr>
+							</p>
+						</div>
+					</div>
+					<div class="col-sm-3 thumbnail-2">
+						<div class="thumbnail">
+							<a href="#" alt="The first post">
+								<img data-src="holder.js/155x155" class="post-img" alt="post image">
+							</a>
+							<div class="caption text-center">
+								<h5>First Post</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- End of Sample -->
+				{% endblock post_summary %}
+				<!-- End of post summary list -->
+				<!-- Page navigation -->
+				{% block page_nav %}
+				{% endblock page_nav %}
+				<!-- End of Page navigation -->
+			</div>
+			<!-- End of main form -->
+			<!-- Right side bar -->
+			<div class="col-sm-3">
+				<!-- About me -->
+				{% block about_me %}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="col-xs-1 sidebar_title">
+						    <span class="glyphicon glyphicon-info-sign"></span>
+						</div>
+						<div style="padding-left:25px"><b>About Me</b></div>
+					</div>
+					<div class="panel-body">		
+						Site information:
+					</div>
+				</div>
+				{% endblock about_me %}
+				<!-- End of about me -->
+				<!-- Post Category -->
+				{% block post_category %}
+					<div class="panel panel-default sidebar-1">
+						<div class="panel-heading">
+							<div class="col-xs-1 sidebar_title">
+								<span class="glyphicon glyphicon-list"></span>
+							</div>
+							<div style="padding-left:25px"><b>Post Category</b></div>
+						</div>				    
+					</div>
+					<div id="category_tree"></div>
+				{% endblock post_category %}
+				<!-- End of Post Category -->
+				<!-- Post Archives -->
+				{% block post_archives %}{% endblock post_archives %}
+				<!-- End of Post Archives -->
+				<!-- Tags Cloud -->	
+				{% block tags_cloud %}{% endblock tags_cloud %}
+				<!-- End of Tags Cloud -->
+			</div>
+		</div>
+	  <!-- above is ok -->
+      <div class="page-header">
+      </div>
+      <div class="well">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean lacinia bibendum nulla sed consectetur.</p>
+      </div>
+    </div>
+	<!-- /container -->
+	{% include 'common/footjs.html' %}
+	{% block post_category_js %}{% endblock post_category_js %}
+  </body>
+</html>

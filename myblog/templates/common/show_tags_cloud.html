@@ -1,0 +1,20 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="col-xs-1 sidebar_title">
+			<span class="glyphicon glyphicon-tags"></span>
+		</div>
+		<div style="padding-left:25px"><b>Tags Cloud</b></div>
+	</div>
+	<div class="panel-body">
+		{% for t in tags %}
+		<div class="btn-group" role="group" aria-label="{{ t.mbt_name }}" style="margin:3px;">
+			<a href="#" role="button" class="btn btn-{{ t.mbt_colormark }} btn-sm">{{ t.mbt_name }}</a>
+			<a href="#" role="button" class="btn btn-default btn-sm disabled">{{ t.mbt_count }}</a>
+		</div>
+		{% empty %}
+		<div class="btn-group" role="group" aria-label="none" style="margin:3px;">
+			<a href='#' role="button" class="btn btn-default btn-sm disabled">none</a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
