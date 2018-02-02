@@ -75,7 +75,7 @@ class MonthlyArticleView(MonthArchiveView):
 class IndexView(generic.ListView):
 	model = Post
 	# template_name = 'articles/base_articles.html'
-	template_name = 'articles/index.html'
+	template_name = 'articles/article.html'
 	#context_object_name = 'PostList'
 	paginate_by = 5  # To specify the post numbers per page.
     
