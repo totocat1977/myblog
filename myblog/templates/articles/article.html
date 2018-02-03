@@ -68,11 +68,11 @@
 	<nav aria-label="Page navigation">
 		<ul class="pagination">
 			<li>
-				<a href="{% url 'articles:postpage' post_page_navbar.first_page %}" aria-label="First"><span aria-hidden="true">&laquo;</span></a>
+				<a href="{% url 'articles:postpage' 1 %}" aria-label="First"><span aria-hidden="true">&laquo;</span></a>
 			</li>
-			{% if post_page_navbar.pre_page != 0 %}
+			{% if PostList.has_previous %}
 			<li>
-				<a href="{% url 'articles:postpage' post_page_navbar.pre_page %}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
+				<a href="{% url 'articles:postpage' PostList.previous_page_number %}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
 			</li>
 			{% else %}
 			<li class="disabled">
@@ -88,9 +88,9 @@
 				{% endif %}
 			{% endfor %}
 			
-			{% if post_page_navbar.next_page != 0 %}							
+			{% if PostList.has_next %}							
 			<li>
-				<a href="{% url 'articles:postpage' post_page_navbar.next_page %}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
+				<a href="{% url 'articles:postpage' PostList.next_page_number %}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
 			</li>
 			{% else %}
 			<li class="disabled">
@@ -106,6 +106,17 @@
 	</nav>
 </div>
 {% endblock page_nav %}
+{% block post_category %}
+	<div class="panel panel-default sidebar-1">
+		<div class="panel-heading">
+			<div class="col-xs-1 sidebar_title">
+				<span class="glyphicon glyphicon-list"></span>
+			</div>
+			<div style="padding-left:25px"><b>Post Category</b></div>
+		</div>				    
+	</div>
+	<div id="category_tree"></div>
+{% endblock post_category %}
 
 {% block post_archives %}{% get_post_archives %}{% endblock post_archives %}
 {% block tags_cloud %}{% get_tags_cloud %}{% endblock tags_cloud %}

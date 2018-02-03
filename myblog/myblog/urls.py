@@ -24,6 +24,8 @@ urlpatterns = [
 #    path('articles/page/<int:page>/', IndexView.as_view(), name='postpage'),
 #    path('articles/archives/<int:year>/',***,name='yeararchive'),
     path('archives/<int:year>/<int:month>/',MonthlyArticleView.as_view(month_format='%m'),name='montharchive'),
+    path('archives/<int:year>/<int:month>/page/<int:page>',MonthlyArticleView.as_view(month_format='%m'),name='montharchivepage'),
+    path('category/<int:id>/', IndexView.as_view(),name='category'),
     path('admin/', admin.site.urls),
 ]
 

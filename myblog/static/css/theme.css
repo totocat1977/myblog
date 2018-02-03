@@ -56,6 +56,7 @@ body {
 .blog-post-datetime-auther {
 	padding-top:5px;
 	padding-left:10px;
+	padding-right:10px;
 	padding-bottom:10px;
 }
 .post-content {
@@ -192,6 +193,10 @@ ul.nav-tabs.affix{
 	margin-top:5px;
 	margin-bottom:5px;
 /*	margin-bottom:5px;*/
+}
+
+.archive {
+	color:#666666;
 }
 
 /*new

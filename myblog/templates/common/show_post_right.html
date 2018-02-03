@@ -16,16 +16,23 @@
 		<div class="blog-post-title">
 			<p>{{ post_info.mbp_title }}</p>
 		</div>					
-		<div class="blog-post-datetime-auther">
-			<a href="#" class="btn btn-default btn-xs disabled" role="button">
-				<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {{ post_info.mbp_created_at|date:"Y-m-d D" }} {{ post_info.mbp_created_at|time:"H:i" }}
-			</a>
-			<a href="#" class="btn btn-default btn-xs disabled" role="button">
-				<span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ post_info.mbp_auther }}
-			</a>
-			<a href="#" class="btn btn-default btn-xs disabled" role="button">
-				<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> comment <span class="badge">{{ post_info.post_static.mbp_s_comments }}</span>
-			</a>
+		<div class="row blog-post-datetime-auther">
+			<div class="col-sm-9">
+			<div class="btn-group" role="group" aria-label="post-datetime-auther">
+				<a href="#" class="btn btn-default btn-xs disabled" role="button">
+					<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> {{ post_info.mbp_created_at|date:"Y-m-d D" }} {{ post_info.mbp_created_at|time:"H:i" }}
+				</a>
+				<a href="#" class="btn btn-default btn-xs disabled" role="button">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ post_info.mbp_auther }}
+				</a>
+				<a href="#" class="btn btn-default btn-xs disabled" role="button">
+					<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> comment <span class="badge">{{ post_info.post_static.mbp_s_comments }}</span>
+				</a>
+			</div>
+			</div>
+			<div class="col-sm-3" style="text-align:right">
+				<a href="#" class="btn btn-default btn-xs" role="button"> {{ post_info.mbp_category }}</a>			
+			</div>
 		</div>
 		<div class="post-content">
 			<p>{{ post_info.mbp_summary }}<a href="#" class="btn btn-default btn-xs" role="button"><span class="glyphicon glyphicon-circle-arrow-right" aria-hidden="true"></span></a> 

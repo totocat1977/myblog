@@ -66,27 +66,59 @@ def get_paginator(CurrPage=1, TotalPages=1):
 
 class MonthlyArticleView(MonthArchiveView):
 	template_name = 'archives/month_articles.html'
-	# template_name = 'articles/base_articles.html'
 	queryset = Post.objects.all()
 	date_field = "mbp_created_at"
 	allow_future = True
-	# paginate_by = 5
+	paginate_by = 10
+	
+	def get_context_data(self, **kwargs):
+		context = super(MonthlyArticleView,self).get_context_data(**kwargs)
+		# context["categories"] = Category.objects.annotate(num_article = Count('article'))
+		context['title'] = "Post Archives"
+		context['year'] = self.kwargs['year']
+		context['month'] = self.kwargs['month']
+		
+		# context.update(month_list())  
+		paginator = Paginator(self.object_list, self.paginate_by)
+		
+		try:
+			req_page = self.kwargs['page']
+		except:
+			req_page = 1
+		
+		try:
+			post = paginator.page(req_page)
+		except PageNotAnInteger:
+			post = paginator.page(1)
+		except EmptyPage:
+			post = paginator.page(paginator.num_pages)
+		
+		context['ArchiveList'] = post
+		context['post_page_navbar'] = get_paginator(int(req_page), paginator.num_pages)
+		
+		return context
 
 class IndexView(generic.ListView):
 	model = Post
 	# template_name = 'articles/base_articles.html'
 	template_name = 'articles/article.html'
-	#context_object_name = 'PostList'
 	paginate_by = 5  # To specify the post numbers per page.
     
-    #def get_queryset(self):
-        # Return Post Summary Information
-    #    return Post.objects.all()[:5]
-
 	def get_context_data(self, *args, **kwargs):
         # 增加额外的数据，这里返回一个文章分类，以字典的形式
 		context = super(IndexView, self).get_context_data(**kwargs)
-		post_list = Post.objects.all()
+		try:
+			cat_id = self.kwargs['id']
+			c=Category.objects.get(mbc_id=cat_id)
+			if c.has_child():
+				all_c = []
+				all_c.append(cat_id)
+				for cc in c.get_all_children():
+					all_c.append(cc[0])
+			post_list = Post.objects.filter(mbp_category__in=all_c)
+		except:
+			post_list = Post.objects.all()
+		
 		paginator = Paginator(post_list, self.paginate_by)
 		
 		#page = self.request.GET.get('page')
