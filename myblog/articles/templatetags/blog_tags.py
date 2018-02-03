@@ -16,7 +16,8 @@ def get_title(strTitle=''):
     return strTitle
 
 @register.inclusion_tag('common/head.html')
-def show_head(title):
+def show_head(title='MyBlog'):
+	title = "Title"
     return {'Title': title}
 
 @register.inclusion_tag('common/fixed_navbar.html', takes_context=True)

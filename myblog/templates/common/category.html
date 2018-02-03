@@ -20,7 +20,7 @@
 			  <ul class="dropdown-menu">
 				{% for s in c.get_all_children %}
 				<!-- start to show the subcategory -->
-				<li><a href="{{ s.0 }}">{{ s.1 }}</a></li>
+				<li><a href="{% url 'category' s.0 %}">{{ s.1 }}</a></li>
 				<!-- end of subcategory -->
 				{% endfor %}
 			  </ul>
@@ -28,7 +28,7 @@
 			<!-- end of show subcategory -->
 			{% else %}
 			<!-- If there hasn't subcategory -->
-				<li><a href="#">{{ c.mbc_name }}</a></li>
+				<li><a href="{% url 'category' c.mbc_id %}">{{ c.mbc_name }}</a></li>
 			<!-- end of without subcategory -->
 			{% endif %}
 		{% endfor %}

@@ -107,12 +107,12 @@ class IndexView(generic.ListView):
 	def get_context_data(self, *args, **kwargs):
         # 增加额外的数据，这里返回一个文章分类，以字典的形式
 		context = super(IndexView, self).get_context_data(**kwargs)
+		cat_id = self.kwargs['cat_id']
 		try:
-			cat_id = self.kwargs['id']
 			c=Category.objects.get(mbc_id=cat_id)
+			all_c = []
+			all_c.append(cat_id)
 			if c.has_child():
-				all_c = []
-				all_c.append(cat_id)
 				for cc in c.get_all_children():
 					all_c.append(cc[0])
 			post_list = Post.objects.filter(mbp_category__in=all_c)
@@ -133,9 +133,10 @@ class IndexView(generic.ListView):
 			post = paginator.page(1)
 		except EmptyPage:
 			post = paginator.page(paginator.num_pages)
-
+		
+		context['cid'] = '2'
 		context['PostList'] = post
-		context['title'] = 'TEST'
+		context['title'] = 'TTTT'
 		context['index'] = 1
 		context['post_page_navbar'] = get_paginator(int(req_page),paginator.num_pages)
 		
