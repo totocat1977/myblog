@@ -1,20 +1,36 @@
 {% load staticfiles %}
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="My Blog Website">
 <meta name="author" content="William Wang">
 <link rel="icon" href="../../favicon.ico">
-<title>54321</title>
-<!-- Bootstrap core CSS -->
-<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<!--<link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">-->
-<!-- Bootstrap theme 
-<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet"> -->
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<link href="{% static 'css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
-<!-- Custom styles for this template -->
-<link href="{% static 'css/theme.css' %}" rel="stylesheet">
-<!-- bootstrap treeview addon CSS -->
-<link href="https://cdn.bootcss.com/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" rel="stylesheet">
-
+<title>{{ title|safe }}</title>
+<!-- uikit core css -->
+<link href="https://cdn.bootcss.com/uikit/3.0.0-beta.42/css/uikit.css" rel="stylesheet">
+<!-- Own CSS -->
+<link href="{% static 'css/theme_n.css' %}" rel="stylesheet">
+<!-- TreeMenu CSS -->
+<link href="{% static 'css/jquery-accordion-menu.css' %}" rel="stylesheet">
+<!--font-awesome-->
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+<!--han CSS-->
+<link href="https://cdn.bootcss.com/Han/3.3.0/han.min.css" rel="stylesheet">
+<!--<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->
+<!-- Bootstrap core JavaScript-->
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<!-- holder.js -->
+<script src="https://cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
+<!-- lazyload img -->
+<script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+<!--vue-->
+<script src="{% static 'js/vue.js' %}"></script>
+<!-- uikit js -->
+<script src="https://cdn.bootcss.com/uikit/3.0.0-beta.42/js/uikit.min.js"></script>
+<script src="https://cdn.bootcss.com/uikit/3.0.0-beta.42/js/uikit-icons.min.js"></script>
+<!-- TreeMenu js -->
+<script src="{% static 'js/jquery-accordion-menu.js' %}"></script>
+<!-- Han JS -->
+<!--<script src="https://cdn.bootcss.com/Han/3.3.0/han.min.js"></script>-->
+<!-- JSRender JS -->
+<script src="https://cdn.bootcss.com/jsrender/1.0.0-rc.70/jsrender.min.js"></script>

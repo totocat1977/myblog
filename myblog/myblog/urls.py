@@ -15,17 +15,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from articles.views import IndexView, MonthlyArticleView
+from articles.views import IndexView, MonthlyArticleView, ArticleDetail, test
+# from user.views import *
 
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
     path('articles/', include('articles.urls')),
-#    path('articles/', IndexView.as_view(), name='index'),
-#    path('articles/page/<int:page>/', IndexView.as_view(), name='postpage'),
-#    path('articles/archives/<int:year>/',***,name='yeararchive'),
-    path('archives/<int:year>/<int:month>/',MonthlyArticleView.as_view(month_format='%m'),name='montharchive'),
-    path('archives/<int:year>/<int:month>/page/<int:page>',MonthlyArticleView.as_view(month_format='%m'),name='montharchivepage'),
-    path('category/<int:cat_id>/', IndexView.as_view(),name='category'),
+    # path('post/<slug:post>/', ArticleDetail.as_view(), name='postdetail'),
+    # path('articles/', IndexView.as_view(), name='index'),
+    # path('articles/page/<int:page>/', IndexView.as_view(), name='postpage'),
+    # path('articles/archives/<int:year>/',***,name='yeararchive'),
+    path('archives/<int:year>/<int:month>/', MonthlyArticleView.as_view(month_format='%m'), name='montharchive'),
+    path('archives/<int:year>/<int:month>/page/<int:page>', MonthlyArticleView.as_view(month_format='%m'), name='montharchivepage'),
+    path('category/<int:cat_id>/', IndexView.as_view(), name='category'),
+    path('category/<int:cat_id>/page/<int:page>/', IndexView.as_view(), name='categorypage'),
+    path('tag/<int:tag_id>', IndexView.as_view(), name="tag"),
+    path('tag/<int:tag_id>/page/<int:page>', IndexView.as_view(), name="tagpage"),
+    path('user/', include('user.urls')),
     path('admin/', admin.site.urls),
+    path('captcha/', include('captcha.urls')),
+    path('test/', test, name='test'),
+    # path('refresh/', captcha_refresh, name='captcha-refresh'),
 ]
 

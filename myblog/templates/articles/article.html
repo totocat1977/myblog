@@ -1,146 +1,181 @@
-{% extends "articles/base.html" %}
+{% extends "common/base.html" %}
 
 {% load staticfiles %}
+{% load i18n %}
 {% load blog_tags %}
 
-{% block head_title %}{% show_head title %}{% endblock head_title %}
+{% block top_navbar %}
+{% include 'common/top_navbar.html' %}
+{% endblock top_navbar %}
 <!-- Carousel slide -->
 {% block ad_slides %}
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-	<ol class="carousel-indicators">
-		<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-		<li data-target="#carousel-example-generic" data-slide-to="1"></li>
-		<li data-target="#carousel-example-generic" data-slide-to="2"></li>
-	</ol>
-	<div class="carousel-inner" role="listbox">
-		<div class="item active">
-			<img data-src="holder.js/1140x150/auto/#777:#555/text:First slide" alt="First slide">
-			<div class="carousel-caption">
-				<h3>First slide label</h3>
-				<p>Here is the comment for 1st slide.</p>
-			</div>
-		</div>
-		<div class="item">
-			<img data-src="holder.js/1140x150/auto/#666:#444/text:Second slide" alt="Second slide">
-			<div class="carousel-caption">
-				<h3>Second slide label</h3>
-				<p>Here is the comment for 2nd slide.</p>
-			</div>
-		</div>
-		<div class="item">
-			<img data-src="holder.js/1140x150/auto/#555:#333/text:Third slide" alt="Third slide">
-			<div class="carousel-caption">
-				<h3>Third slide label</h3>
-				<p>Here is the comment for 3rd slide.</p>
+	<div class="uk-navbar-container" style="margin-bottom:20px">
+		<div class="uk-position-relative uk-visible-toggle uk-light" uk-slideshow="autoplay: true; animation: fade; min-height: 200; max-height: 280">
+			<ul class="uk-slideshow-items">
+				<li>
+					<div class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left uk-transform-origin-top-center">
+						<img src="{% static 'images/slider_1.jpg' %}" alt="" uk-cover>
+					</div>
+				</li>
+				<li>
+					<div class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
+						<img src="{% static 'images/slider_2.jpg' %}" alt="" uk-cover>
+					</div>
+				</li>
+				<li>
+					<div class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
+						<img src="{% static 'images/slider_3.jpg' %}" alt="" uk-cover>
+					</div>			
+				</li>
+			</ul>
+			<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+			<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+			<div class="uk-position-bottom-center uk-position-small">
+				<ul class="uk-slideshow-nav uk-dotnav uk-flex-center uk-margin">
+					<li uk-slideshow-item="0" class=""><a href="#">Item 1</a></li>
+					<li uk-slideshow-item="1" class=""><a href="#">Item 2</a></li>
+					<li uk-slideshow-item="2" class="uk-active"><a href="#">Item 3</a></li>
+				</ul>
 			</div>
 		</div>
 	</div>
-	<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-		<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-		<span class="sr-only">Previous</span>
-	</a>
-	<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-		<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-		<span class="sr-only">Next</span>
-	</a>
-</div>
 {% endblock ad_slides %}
 <!-- End of Carousel slide -->
-
-{% block site_info_bar %}
-<div class="alert alert-info" role="alert">
-	Hello everyone! Welcome to <a href="#" class="alert-link">William's Blog</a>, hope you will enjoy here!
-</div>
-{% endblock site_info_bar %}
-
-{% block post_summary %}
-	{% for p in PostList %}
+<!-- Body -->
+{% block content %}
+	{% for p in post_list %}
 		{% if forloop.counter|divisibleby:2 %}
-			{% show_post_right %}
+			{% show_post_summary p_l='uk-flex-first' t_l='uk-align-right' %}
 		{% else %}
-			{% show_post_left %}
+			{% show_post_summary p_l='uk-flex-last' t_l='uk-align-left' %}
 		{% endif %}
+	{% empty%}
+		<article class="uk-article tm-article">
+			<div class="uk-panel uk-context-body">
+				对不起，暂时没有找到符合条件的文章！
+			</div>
+		</article>
 	{% endfor %}
-{% endblock post_summary %}
+{% endblock content %}
 
 {% block page_nav %}
-<div align="center">
-	<nav aria-label="Page navigation">
-		<ul class="pagination">
+{% if page_obj.paginator.num_pages != 1 %}
+<div class="uk-width-1-1 uk-margin-medium-top">
+	<ul class="uk-pagination uk-flex-center">
+        {% if page_obj.number == 1 %}
+            <li class="uk-disabled"><span><i class="fa fa-angle-double-left" aria-hidden="true"></i></span></li>
+        {% else %}
+		<li><a href="{% url 'articles:postpage' 1 %}" aria-label="First"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+        {% endif %}
+        {% if page_obj.has_previous %}
+		<li>
+			<a href="{% url 'articles:postpage' page_obj.previous_page_number %}" uk-icon="icon: chevron-left"></a>
+		</li>
+		{% else %}
+		<li class="uk-disabled">
+			<span uk-icon="chevron-left"></span>
+		</li>
+		{% endif %}
+        {% for p in page_obj.paginator.page_range_ext %}
+		{% if p == page_obj.number %}
+			<li class="uk-active"><span>{{ p }} <span class="sr-only">(current)</span></span></li>
+		{% else %}
 			<li>
-				<a href="{% url 'articles:postpage' 1 %}" aria-label="First"><span aria-hidden="true">&laquo;</span></a>
+				<a href="{% url 'articles:postpage' p %}">{{ p }}</a>
 			</li>
-			{% if PostList.has_previous %}
-			<li>
-				<a href="{% url 'articles:postpage' PostList.previous_page_number %}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
-			</li>
-			{% else %}
-			<li class="disabled">
-				<span aria-hidden="true">&lsaquo;</span>
-			</li>
-			{% endif %}
-			
-			{% for p in post_page_navbar.page %}
-				{% if p.1 == 1 %}
-				<li class="active"><span>{{ p.0 }} <span class="sr-only">(current)</span></span></li>
-				{% elif p.0 != 0 %}
-				<li>
-					<a href="{% url 'articles:postpage' p.0 %}">{{ p.0 }}</a>
-				</li>
-
+		{% endif %}
+		{% endfor %}
+		{% if page_obj.has_next %}
+		<li>
+			<a href="{% url 'articles:postpage' page_obj.next_page_number %}" uk-icon="icon: chevron-right"></a>
+		</li>
+		{% else %}
+		<li class="uk-disabled">
+			<span uk-icon="chevron-right"></span>
+		</li>
+		{% endif %}
+        {% if page_obj.paginator.num_pages == page_obj.number %}
+            <li class="uk-disabled"><span><i class="fa fa-angle-double-right" aria-hidden="true"></i></span></li>
+        {% else %}
+            <li><a href="{% url 'articles:postpage' page_obj.paginator.num_pages %}" aria-label="Last"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+        {% endif %}
+	</ul>
+</div>
+{% endif %}
+{% endblock page_nav %}
+<!-- About me -->
+{% block about_me %}
+<div class="uk-panel uk-panel-box">
+	<h3 class="uk-panel-title">关于</h3>
+	<hr>
+	<p>
+	Site information:
+	</p>
+</div>
+{% endblock about_me %}
+<!-- End of about me -->
+{% block post_category %}
+<div class="uk-panel uk-panel-box">
+	<h3 class="uk-panel-title">分类</h3>
+	<hr>
+	<div id="jquery-accordion-menu" class="jquery-accordion-menu grey">
+		<ul id="category-list">
+			<li class="active"><a href="{% url 'articles:index' %}">MyBlog</a></li>
+			{% for c in category_navbar %}
+				{% if c.has_child %}
+					<li><a href="#">{{ c.mbc_name }}</a>
+						<ul class="submenu">
+						{% for s in c.get_all_children %}
+							<li><a href="{{ s.get_absolute_url }}">{{ s.mbc_name }}</a><span class="uk-badge jquery-accordion-menu-label">{{ s.get_post_nums_by_category }}</span></li>
+						{% endfor %}
+						</ul>
+					</li>
+				{% else %}
+					<li><a href="{{ c.get_absolute_url }}">{{ c.mbc_name }}</a></li>
 				{% endif %}
 			{% endfor %}
-			
-			{% if PostList.has_next %}							
-			<li>
-				<a href="{% url 'articles:postpage' PostList.next_page_number %}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
-			</li>
-			{% else %}
-			<li class="disabled">
-				<span aria-hidden="true">&rsaquo;</span>
-			</li>
-			{% endif %}
-			<li>
-				<a href="{% url 'articles:postpage' post_page_navbar.last_page %}" aria-label="Last">
-					<span aria-hidden="true">&raquo;</span>
-				</a>
-			</li>
 		</ul>
-	</nav>
-</div>
-cat_id: {{ cid }}
-{% endblock page_nav %}
-{% block post_category %}
-	<div class="panel panel-default sidebar-1">
-		<div class="panel-heading">
-			<div class="col-xs-1 sidebar_title">
-				<span class="glyphicon glyphicon-list"></span>
-			</div>
-			<div style="padding-left:25px"><b>Post Category</b></div>
-		</div>				    
 	</div>
-	<div id="category_tree"></div>
+</div>
 {% endblock post_category %}
 
 {% block post_archives %}{% get_post_archives %}{% endblock post_archives %}
 {% block tags_cloud %}{% get_tags_cloud %}{% endblock tags_cloud %}
+{% block link_sites %}
+			<div class="uk-panel uk-panel-box">
+				<h3 class="uk-panel-title">链接</h3>
+				<hr>
+				<div class="uk-width-1-1" uk-margin>
+				外部网站链接
+				</div>
+			</div>
+{% endblock link_sites %}
 
-{% block post_category_js %}
-<script>
-$(function() {
-    var json =  {% autoescape off %}{% get_category_list_sidebar %}{% endautoescape %};
+{% block body %}
+{% trans "uk-width-3-4" as left_side_width %}
+{% trans "uk-width-medium-1-4" as right_side_width %}
+{{ block.super }}
+{% endblock body %}
 
-var $tree = $('#category_tree').treeview({
-          color: "#4b4c4c",
-          /*expandIcon: "glyphicon glyphicon-stop",
-          collapseIcon: "glyphicon glyphicon-unchecked",
-          nodeIcon: "glyphicon glyphicon-user",*/
-          enableLinks: true,
-          selectedBackColor: "#eeeeee",
-          selectedColor: "#36454f",
-          showTags: true,
-          data:json})
-})
+{% block js_code %}
+<script type="text/javascript">
+jQuery(document).ready(function () {
+	jQuery("#jquery-accordion-menu").jqueryAccordionMenu();
+});
+
+$(function(){
+    $("img.lazy").lazyload({effect:"fadeIn"}
+    					   /*{threshold: 180}*/
+    					   /*{placeholder:"holder.js/180x180?text=Default Image"}*/
+    					   /*{skip_invisible:true}*/
+    					  );
+    					  	
+	//列表项背景颜色切换
+	$("#category-list li").click(function(){
+		$("#category-list li.active").removeClass("active")
+		$(this).addClass("active");
+	})	
+})	
 </script>
-{% endblock post_category_js %}
+{% endblock js_code %}
 

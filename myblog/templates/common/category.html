@@ -1,46 +1,35 @@
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-	<!-- Brand and toggle get grouped for better mobile display -->
-	<div class="navbar-header">
-	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1" aria-expanded="false">
-		<span class="sr-only">Toggle navigation</span>
-		<span class="icon-bar"></span>
-		<span class="icon-bar"></span>
-		<span class="icon-bar"></span>
-	  </button>
-	  <a class="navbar-brand" href="{% url 'articles:index' %}">MyBlog</a>
-	</div>
-	<div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-	  <ul class="nav navbar-nav">
-		{% for c in category_list %}
-			{% if c.get_all_children|length > 0 %}
-			<!-- If there has the subcategory -->
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ c.mbc_name }} <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				{% for s in c.get_all_children %}
-				<!-- start to show the subcategory -->
-				<li><a href="{% url 'category' s.0 %}">{{ s.1 }}</a></li>
-				<!-- end of subcategory -->
+{% load staticfiles %}
+<div class="uk-navbar-container">
+	<nav class="tm-navbar uk-navbar" uk-navbar="mode: click">
+		<div class="uk-navbar-left">
+			<a href="{% url 'articles:index' %}" class="uk-navbar-item tm-logo">
+				<img src="{% static 'images/logo.png' %}" width="120" height="40" alt="William's Blog">
+			</a>
+			<ul class="uk-navbar-nav uk-visible@m">
+				{% for c in category_navbar %}
+					{% if c.has_child %}
+				<li class="uk-parent">
+					<a href="{{ c.get_absolute_url }}">{{ c.mbc_name }}</a>
+					<div class="uk-navbar-dropdown uk-dropdown uk-dropdown-width-small uk-dropdown-bottom" uk-dropdown>
+						<div class="uk-grid uk-dropdown-grid" uk-grid>
+							<div class="uk-width-1-1">
+								<ul class="uk-dropdown-nav uk-nav uk-nav-navbar">
+									{% for s in c.get_all_children %}
+									<li><a href="{{ s.get_absolute_url }}">{{ s.mbc_name }}</a></li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</li>
+					{% else %}
+				<li><a href="{{ c.get_absolute_url }}">{{ c.mbc_name }}</a></li>
+					{% endif %}
 				{% endfor %}
-			  </ul>
-			</li>			
-			<!-- end of show subcategory -->
-			{% else %}
-			<!-- If there hasn't subcategory -->
-				<li><a href="{% url 'category' c.mbc_id %}">{{ c.mbc_name }}</a></li>
-			<!-- end of without subcategory -->
-			{% endif %}
-		{% endfor %}
-	  </ul>
-	  <!--
-	  <form class="navbar-form navbar-right">
-		<div class="form-group">
-		  <input type="text" class="form-control" placeholder="Search">
+			</ul>
 		</div>
-		<button type="submit" class="btn btn-default">Submit</button>
-	  </form>
-	  -->
-	</div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+		<div class="uk-navbar-right uk-navbar-content uk-padding-remove uk-hidden@m">
+			<a class="tm-logo-small uk-float-left" href="#"><span uk-navbar-toggle-icon></span></a>
+		</div>
+	</nav>
+</div>

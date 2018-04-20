@@ -199,6 +199,21 @@ ul.nav-tabs.affix{
 	color:#666666;
 }
 
+.al:focus,.al:active:focus,.al.active:focus,.al.focus,.al:active.focus,.al.active.focus { 
+	outline: none;   
+	border-color: transparent;  
+	box-shadow:none;
+	background:#77bc1f;
+	color:#fff;
+}
+
+.reg-form {
+	background-color:#ffffff;
+	margin-right:30px;
+	margin-top:30px;
+	padding-left:30px;
+}
+
 /*new
 ul.nav-pills{
 	width: 100px;
