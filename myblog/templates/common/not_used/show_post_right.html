@@ -1,0 +1,38 @@
+{% load staticfiles %}
+<!-- Post list (left) -->
+<article class="uk-article tm-article" id="{{ post_info.mbp_id }}">
+	<h1 class="uk-article-title">{{ post_info.mbp_title }}</h1>
+	<ul class="uk-subnav uk-subnav-divider uk-article-meta uk-vertical-align-middle">
+		<li>作者：<a href="#" title="{{ post_info.mbp_auther }}">{{ post_info.mbp_auther }}</a></li>
+		<li>时间：<time datetime="{{ post_info.mbp_created_at|date:'Y-m-d' }}">{{ post_info.mbp_created_at|date:"Y-m-d" }}</time></li>
+		<li>分类：<a href="#" rel="category">{{ post_info.mbp_category }}</a></li>
+		<li>评论：<a href="#" rel="comment">{{ post_info.post_static.mbp_s_comments|default:0 }} 份</a></li>
+	</ul>
+	<div class="uk-flex-top" uk-grid>
+		<div class="uk-width-medium-3-4">
+			<div class="uk-panel uk-context-body">
+			{{ post_info.mbp_summary }}
+			<div class="uk-margin-small-top"><button class="uk-button uk-button-default">继续阅读</button></div>
+			</div>									
+		</div>
+		<div class="uk-width-medium-1-4 uk-flex-last">
+			<div class="uk-thumbnail">
+				<img class="lazy" src="holder.js/190x190?text=Default Image" data-original="{% static 'images/default.jpg' %}" style="width:190px;height:190px;" alt="{{ post_info.mbp_image_caption }}">
+				<div class="uk-thumbnail-caption">{{ test }}</div>
+			</div>
+		</div>
+	</div>
+	<div class="uk-align-left">
+		<ul class="uk-subnav uk-subnav-divider">
+			{% for t in post_info.get_all_tags %}
+				{% if forloop.first %}
+					<li>标签：<a href="#">{{ t.0 }}</a></li>
+				{% else %}
+					<li><a href="#">{{ t.0 }}</a></li>
+				{% endif %}
+			{% empty %}
+				<li>标签：无</li>
+			{% endfor %}
+		</ul>
+	</div>
+</article>

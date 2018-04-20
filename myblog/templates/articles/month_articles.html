@@ -1,0 +1,68 @@
+{% extends "articles/article.html" %}
+
+{% load staticfiles %}
+{% load blog_tags %}
+
+{% block category_navbar %}
+<div class="tm-toolbar uk-clearfix" style="margin-bottom:20px">
+	<div class="uk-float-left">
+		<div class="uk-panel">
+			{% if previous_month %}
+			<a href="{% url 'montharchive' previous_month|date:'Y' previous_month|date:'n'  %}" class="uk-button uk-button-default tag-font">
+				<span aria-hidden="true">&larr;</span> {{ previous_month|date:"Y.n" }}
+			</a>
+			{% endif %}
+		</div>
+	</div>
+	<div class="uk-float-right">
+		<div class="uk-panel">
+			{% if next_month %}
+			<a href="{% url 'montharchive' next_month|date:'Y' next_month|date:'n'  %}" class="uk-button uk-button-default tag-font">
+				{{ next_month|date:"Y.n" }} <span aria-hidden="true">&rarr;</span>
+			</a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock category_navbar %}
+
+{% block page_nav %}
+{% if page_obj.paginator.num_pages != 1 %}
+<div class="uk-width-1-1 uk-margin-medium-top">
+	<ul class="uk-pagination uk-flex-center">
+        {% if page_obj.number == 1 %}
+            <li class="uk-disabled"><span><i class="fa fa-angle-double-left" aria-hidden="true"></i></span></li>
+        {% else %}
+			<li><a href="{% url 'montharchivepage' year month 1 %}" aria-label="First"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+        {% endif %}
+
+		{% if page_obj.has_previous %}
+			<li><a href="{% url 'montharchivepage' year month page_obj.previous_page_number %}" uk-icon="icon: chevron-left"></a></li>
+		{% else %}
+			<li class="uk-disabled"><span uk-icon="chevron-left"></span></li>
+		{% endif %}
+
+		{% for p in page_obj.paginator.page_range_ext %}
+			{% if p == page_obj.number %}
+				<li class="uk-active"><span>{{ p }} <span class="sr-only">(current)</span></span></li>
+			{% else %}
+				<li><a href="{% url 'montharchivepage' year month p %}">{{ p }}</a></li>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<li><a href="{% url 'montharchivepage' year month page_obj.next_page_number %}" uk-icon="icon: chevron-right"></a></li>
+		{% else %}
+			<li class="uk-disabled"><span uk-icon="chevron-right"></span></li>
+		{% endif %}
+
+        {% if page_obj.paginator.num_pages == page_obj.number %}
+            <li class="uk-disabled"><span><i class="fa fa-angle-double-right" aria-hidden="true"></i></span></li>
+        {% else %}
+            <li><a href="{% url 'montharchivepage' year month page_obj.paginator.num_pages %}" aria-label="Last"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+        {% endif %}
+	</ul>
+</div>
+{% endif %}
+{% endblock page_nav %}
+

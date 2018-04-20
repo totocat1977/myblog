@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<article class="uk-article tm-article">
+    <h2 class="uk-panel-title">评论</h2>
+    <hr>
+    <div uk-grid>
+    {% if is_authed %}
+        <div class="uk-width-1-5">
+            <div class="uk-width-auto uk-margin-small-top">
+                <img src="{% static 'images/default-avatar.jpg' %}" style="width:80px;height:80px;">
+            </div>
+            <h4 class="uk-comment-title"><a class="uk-link-reset" href="#">{{ username }}</a></h4>
+        </div>
+        <div class="uk-width-4-5">
+            <form class="uk-form uk-form-stacked" method="Post" action="{% url 'articles:newcomment' %}">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+{% if form.subject.errors %}
+    <ol>
+    {% for error in form.subject.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
+{{ form }}
+                <div class="uk-margin-small-top uk-align-right">
+                    <button class="uk-button uk-button-default" type="submit" id="comment">提交</button>
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <div class="uk-width-1-1">
+                本站<a href="{{ login_url }}" class="uk-link-reset">登录</a>后方可评论。
+        </div>
+    {% endif %}
+    </div>
+    <hr>
+    <div class="uk-width-1-1 uk-margin">
+        <ul class="uk-comment-list" id="commentdetail"></ul>
+    </div>
+</article>

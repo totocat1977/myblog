@@ -1,0 +1,112 @@
+<ul class="uk-comment-list">
+    <li>
+        <div class="uk-comment uk-visible-toggle">
+            <header class="uk-comment-header uk-position-relative">
+                <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="lazy" src="holder.js/60x60?text=Avatar" data-original="{% static 'images/default-avatar.jpg' %}" style="width:60px;height:60px;">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">{{ c.mbc_auther }}</a></h4>
+                        <p class="uk-comment-meta uk-margin-remove-top"><a class="uk-link-reset" href="#">{{ c.mbc_created_at|date:"Y-m-d" }}</a></p>
+                    </div>
+                </div>
+                <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" href="#">Reply</a></div>
+            </header>
+            <div class="uk-comment-body">
+                <p>{{ c.mbc_content }}</p>
+            </div>
+            <hr>
+        </div>
+        <ul>
+            <li>
+                <div class="uk-comment uk-visible-toggle">
+                    <header class="uk-comment-header uk-position-relative">
+                        <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                            <div class="uk-width-auto">
+                                <img class="lazy" src="holder.js/60x60?text=Avatar" data-original="{% static 'images/default-avatar.jpg' %}" style="width:60px;height:60px;">
+                            </div>
+                            <div class="uk-width-expand">
+                                <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">totocat</a></h4>
+                                <p class="uk-comment-meta uk-margin-remove-top"><a class="uk-link-reset" href="#">12 days ago</a></p>
+                            </div>
+                        </div>
+                        <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" href="#">Reply</a></div>
+                    </header>
+                    <div class="uk-comment-body">
+                        <p>确实，支持一下！</p>
+                    </div>
+                    <hr>
+                </div>
+            </li>
+            <li>
+                <div class="uk-comment uk-visible-toggle">
+                    <header class="uk-comment-header uk-position-relative">
+                        <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                            <div class="uk-width-auto">
+                                <img class="lazy" src="holder.js/60x60?text=Avatar" data-original="{% static 'images/default-avatar.jpg' %}" style="width:60px;height:60px;">
+                            </div>
+                            <div class="uk-width-expand">
+                                <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">Admin</a></h4>
+                                <p class="uk-comment-meta uk-margin-remove-top"><a class="uk-link-reset" href="#">12 days ago</a></p>
+                            </div>
+                        </div>
+                        <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" href="#">Reply</a></div>
+                    </header>
+                    <div class="uk-comment-body">
+                        <p>Thanks!</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+<script type="text/javascript">
+//自定义JS中字符串格式化方法
+String.prototype.Format=function (arg) {
+    //console.log(this,arg); //this,当前调用方法的字符串，arg为Format方法传入的参数
+    //return '666'; //return，格式化之后获取的新内容，return啥就替换为啥
+    var temp = this.replace(/\{(\w+)\}/g,function (k,kk) {
+        // k相当于{(\w+)},kk相当于(\w+)要替换的东西,arg一般是一个字典
+        return arg[kk];
+    });
+    return temp;
+};
+
+$(function(){
+    //发送Ajax请求，获取所有评论的信息
+    //列表
+    var json_data = {'post_id': '{{ post_detail.mbp_id }}'};
+    //JS生成结构
+    //var token=$.cookie('csrftoken');
+    $.getJSON("{% url 'articles:commentdetail' %}", json_data, function(arg){
+            if (arg.status){
+                var comment=commentTree(arg.data);
+                $('#commentdetail').append(comment);
+            }else {
+                alert(arg.msg);
+            }
+    })
+});
+//多级评论递归函数,js函数里面也有return,自己写js字符串格式化
+//pyhton中字符串的方法都是str下的,js中是String.prototype下找的
+function commentTree(commentList) {
+    var comment_str="<div class='comment'>";
+    $.each(commentList,function (k,row) {
+        var auther = "{mbc_auther}";
+        var created_at = "{mbc_created_at}";
+        var content ="<div class='content'>{mbc_content}</div>".Format({mbc_content:row.mbc_content});
+        var json_data = {"auther": auther, "created_at": created_at, "content": content};
+        var html = $("#commentTemplate").render(json_data);
+        $("#list").append(html);
+        comment_str+=content;
+        if (row.child.length>0){
+            comment_str += commentTree(row.child);
+        }
+    });
+    comment_str += '</div>';
+    return comment_str
+}
+</script>

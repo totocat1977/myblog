@@ -1,0 +1,61 @@
+{% extends "articles/article.html" %}
+
+{% load staticfiles %}
+{% load blog_tags %}
+
+{% block category_navbar %}
+<div class="tm-toolbar uk-clearfix" style="margin-bottom:20px">
+	<div class="uk-float-left">
+		<div class="uk-panel">
+			<ul class="uk-breadcrumb">	
+				<li>标签：<a href="{% url 'articles:index' %}">MyBlog</a></li>
+				<li><span>{{ tag_name }}</span></li>
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock category_navbar %}
+
+
+{% block page_nav %}
+{% if page_obj.paginator.num_pages != 1 %}
+<div class="uk-width-1-1 uk-margin-medium-top">
+	<ul class="uk-pagination uk-flex-center">
+		<li>
+			<a href="{% url 'tagpage' tag_id 1 %}" aria-label="First"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+		</li>
+		{% if page_obj.has_previous %}
+		<li>
+			<a href="{% url 'tagpage' tag_id page_obj.previous_page_number %}" uk-icon="icon: chevron-left"></a>
+		</li>
+		{% else %}
+		<li class="uk-disabled">
+			<span uk-icon="chevron-left"></span>
+		</li>
+		{% endif %}
+		{% for p in post_page_navbar.page %}
+			{% if p.1 == 1 %}
+			<li class="uk-active"><span>{{ p.0 }} <span class="sr-only">(current)</span></span></li>
+			{% elif p.0 != 0 %}
+			<li>
+				<a href="{% url 'tagpage' tag_id p.0 %}">{{ p.0 }}</a>
+			</li>
+			{% endif %}
+		{% endfor %}
+		{% if page_obj.has_next %}
+		<li>
+			<a href="{% url 'tagpage' tag_id page_obj.next_page_number %}" uk-icon="icon: chevron-right"></a>
+		</li>
+		{% else %}
+		<li class="uk-disabled">
+			<span uk-icon="chevron-right"></span>
+		</li>
+		{% endif %}
+		<li>
+			<a href="{% url 'tagpage' tag_id post_page_navbar.last_page %}" aria-label="Last"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+		</li>
+	</ul>
+</div>
+{% endif %}
+{% endblock page_nav %}
+

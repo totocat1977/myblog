@@ -1,0 +1,396 @@
+{% extends "account/base_account.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}
+{% trans "个人中心" as title %}
+{{ block.super }}
+{% endblock head_title %}
+
+{% block reg_form %}
+<div class="uk-panel uk-panel-box" id="reg_login_panel">
+	<h2 class="uk-heading-divider uk-h2-se">{% trans "Sign Up" %}</h2>
+    {% if messages %}
+	<div id="msg" class="uk-alert-primary" uk-alert>
+		<a class="uk-alert-close" uk-close></a>
+		<h4>信息：</h4>
+		<div id="errmsg">
+			<ul>
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% endif %}
+	<div class="uk-alert-primary" uk-alert>
+		如果你已经注册了我们网站的帐号，请点击<a href="{{ login_url }}"><b>登陆</b></a>。
+	</div>
+	<div class="uk-width-6-7">
+		<form class="uk-form uk-form-stacked" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        <fieldset class="uk-fieldset">
+		<!--<form class="uk-form uk-form-stacked" id="signup_form">-->
+			{% csrf_token %}
+			<div class="uk-margin">
+				<div class="uk-container uk-grid-collapse" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+                            {{ form.username.errors }}
+                            <label class="uk-form-label" for="{{ form.username.auto_id }}">{{ form.username.label }}</label>
+                            <div class="uk-form-controls">{{ form.username }}</div>
+                    </div>
+                    <div class="uk-panel uk-width-1-3" id="username_msg"></div>
+                </div>
+            </div>
+			<div class="uk-margin">
+				<div class="uk-container uk-grid-collapse" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+                            {{ form.password1.errors }}
+                            <label class="uk-form-label" for="{{ form.password1.auto_id }}">{{ form.password1.label }}</label>
+                            <div class="uk-form-controls">{{ form.password1 }}</div>
+                    </div>
+                    <div class="uk-panel uk-width-1-3" id="password1_msg"></div>
+                </div>
+            </div>
+			<div class="uk-margin">
+				<div class="uk-container uk-grid-collapse" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+                            {{ form.password2.errors }}
+                            <label class="uk-form-label" for="{{ form.password2.auto_id }}">{{ form.password2.label }}</label>
+                            <div class="uk-form-controls">{{ form.password2 }}</div>
+                    </div>
+                    <div class="uk-panel uk-width-1-3" id="password2_msg"></div>
+                </div>
+            </div>
+			<div class="uk-margin">
+				<div class="uk-container uk-grid-collapse" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+                        {{ form.mbu_email.errors }}
+                        <label class="uk-form-label" for="{{ form.mbu_email.auto_id }}">{{ form.mbu_email.label }}</label>
+                        <div class="uk-form-controls">{{ form.mbu_email }}</div>
+                    </div>
+                    <div class="uk-panel uk-width-1-3" id="email_msg"></div>
+                </div>
+			</div>
+			<div class="uk-margin">
+				<div class="uk-container" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+					   <label class="uk-form-label">验证码</label>
+						<div class="uk-form-controls">
+							<img src="{{ captcha.image_url }}" alt="captcha" class="captcha" id="captcha" style="width:80px;height:35px;cursor:pointer"/>&nbsp;&nbsp;
+							<input class="uk-input uk-width-2-3" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_1" name="captcha_1" type="text" placeholder="Code" />
+							<input id="id_captcha_0" name="captcha_0" type="hidden" value="{{ captcha.hashkey }}" />
+						</div>
+					</div>
+					<div class="uk-panel uk-width-1-3" id="captch_msg"></div>
+				</div>
+			</div>
+			{% if redirect_field_value %}
+			<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+			{% endif %}
+			<div class="uk-margin-medium-top">
+				<button class="uk-button uk-button-default" type="submit" id="signup">{% trans "Sign Up" %}</button>
+				<button class="uk-button uk-button-default">重置</button>
+			</div>
+        </fieldset>
+		</form>
+	</div>
+</div>
+{% endblock reg_form %}
+{% block js_code %}
+<script type="text/javascript">
+$(document).ready(function(){
+    var captcha = $('.captcha');
+    var captcha_0 = $('#id_captcha_0');
+    var captcha_1 = $('#id_captcha_1');
+    var captcha_msg = $("#captch_msg");
+    var username = $('#id_username');
+    var username_msg = $('#username_msg');
+    var password1 = $("#id_password1");
+    var pw1_msg = $("#password1_msg");
+    var password2 = $("#id_password2");
+    var pw2_msg = $("#password2_msg");
+    var email = $("#id_mbu_email");
+    var email_msg = $('#email_msg');
+
+    var result_msg = "";
+    var result_status = "";
+
+	captcha.css({
+		'cursor': 'pointer'
+	});
+
+	//ajax 刷新
+	captcha.click(function(){
+		console.log('click');
+		 $.getJSON("/captcha/refresh/", function(result){
+			 captcha.attr('src', result['image_url']);
+			 captcha_0.val(result['key']);
+             captcha_msg.empty();
+		});
+	});
+
+	captcha_1.click(function () {
+	    captcha_msg.empty();
+    });
+
+	//ajax动态验证
+	captcha_1.blur(function(){
+	// #id_captcha_1为输入框的id，当该输入框失去焦点是触发函数
+        var var_captcha = captcha_1.val();
+        var_captcha = $.trim(var_captcha);
+
+        captcha_msg.empty();
+
+        if(var_captcha===""){
+            return;
+        }
+
+        var json_data={
+                'field': 'captcha',
+                'response': captcha_1.val(),
+                'hashkey': captcha_0.val()
+        };
+        $.getJSON("{% url 'user:ajax_val' %}", json_data, function(data){ //ajax发送
+        //    captcha_msg.empty();
+            if(data['status']){ //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+                document.getElementById("captch_msg").innerHTML = '<br/><span class="uk-label uk-label-success">验证码正确</span>'
+            }else{
+                document.getElementById("captch_msg").innerHTML = '<br/><span class="uk-label uk-label-danger">验证码错误</span>'
+            }
+        }); //getJSON
+	});
+
+	jQuery.fn.Validation = function(object, field, pattern, msg_object){
+	    var var_object = object.val();
+        var uPattern = new RegExp(pattern,"g");
+        var fieldname = "";
+
+    //    msg_object.empty();
+
+        var_object = $.trim(var_object);
+        if(var_object===""){
+        //    msg_object.empty();
+            return
+        }
+
+        switch (field){
+            case "email":
+                fieldname = "邮件地址";
+                break;
+            case "username":
+                fieldname = "用户名";
+                break;
+        }
+
+        var json_data = {};
+        json_data["field"] = field;
+        json_data[field] = var_object;
+
+        $.ajaxSettings.async = false;
+        $.getJSON("{% url 'user:ajax_val' %}", json_data, function(data){
+            if(data['status']){ //status返回1:User has been registered by others.
+                result_msg = "已被注册";
+                result_status = "uk-label-danger";
+            }else{
+                var URTest = uPattern.test(var_object);
+                if(!(URTest)) {
+                    result_msg = "不符合规则";
+                    result_status = "uk-label-danger";
+                }else{
+                    result_msg = "可以注册";
+                    result_status = "uk-label-success";
+                }
+            }
+        });
+
+        msg_object.html('<br/><span class="uk-label ' + result_status + '">' + fieldname + result_msg + '</span>');
+        //msg_object.html('<label class="uk-form-label" hidden></label><div class="uk-width-1-1 ' + result_status + '" uk-alert>'+ fieldname + result_msg +'</div>');
+    };
+
+	username.click(function () {
+	    username_msg.empty();
+	//    username.Validation("test1111");
+    });
+
+	username.blur(function () {
+	    username.Validation(username,'username','^[a-zA-Z][a-zA-Z0-9_-]{3,15}$',username_msg);
+    });
+
+	email.click(function () {
+        email_msg.empty();
+    });
+
+	email.blur(function () {
+        email.Validation(email, 'email', "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})$", email_msg);
+    });
+
+	password1.click(function () {
+       pw1_msg.empty();
+    });
+
+    password1.blur(function () {
+        var var_password1 = password1.val();
+        var var_password2 = password2.val();
+        var pPattern = /^.*(?=.{8,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@_#$%^&*? ]).*$/;
+
+        var PWcheck = pPattern.test(var_password1);
+        if(!(PWcheck)){
+            result_msg = "不符合复杂性要求";
+            result_status = "uk-label-danger";
+        }else{
+            result_msg = "符合复杂性要求";
+            result_status = "uk-label-success";
+        }
+        pw1_msg.html('<br/><span class="uk-label ' + result_status + '">' + result_msg + '</span>');
+
+        if($.trim(var_password2) !== ""){
+            password2.blur();
+        }
+    });
+
+    password2.click(function () {
+       pw2_msg.empty();
+    });
+
+    password2.blur(function () {
+        var var_password1 = password1.val();
+        var var_password2 = password2.val();
+
+        if(var_password2===var_password1){
+            result_msg = "两次密码一致";
+            result_status = "uk-label-success";
+        }else{
+            result_msg = "两次密码不一致";
+            result_status = "uk-label-danger";
+        }
+        pw2_msg.html('<br/><span class="uk-label ' + result_status + '">' + result_msg + '</span>');
+    })
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+$(document).ready(function(){
+    $("#reg").click(function(){
+        $.ajax({
+            url:"{% url 'account_signup' %}",
+            type:"GET",
+            data:{},
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"html",
+            success:function(httpdata){
+                //alert(httpdata);
+                htmldt=JSON.parse(httpdata);
+                $("#reg_login_panel").empty();
+                document.getElementById("reg_login_panel").innerHTML = htmldt.html;
+					//add click function to captcha image
+            },
+			error:function(){
+				alert('请求有误');
+			} 
+        });
+    });
+
+    $(document).on("click", "#captcha", function(){
+			//console.log('click');
+			$.getJSON("/captcha/refresh/", function(result){
+			 $(".captcha").attr('src', result['image_url']);
+			 $("#id_captcha_0").val(result['key']);
+			 $("#id_captcha_1").val('');
+			 $("#captch_msg").empty();
+			});                		
+    }); //Click function
+    
+    //add auto checking function for captcha when blur
+    $(document).on("blur", "#id_captcha_1", function(){
+			json_data={
+				'response':$('#id_captcha_1').val(),
+				'hashkey':$('#id_captcha_0').val()
+			}
+			$.getJSON("{% url 'user:ajax_val' %}", json_data, function(data){ //ajax发送            
+				$("#captch_msg").empty();
+				if(data['status']){ //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+					document.getElementById("captch_msg").innerHTML = '<label class="uk-form-label" hidden></label><div class="uk-alert-primary" id="captcha_status" uk-alert>验证码正确</div>'
+				}else{
+					document.getElementById("captch_msg").innerHTML = '<label class="uk-form-label" hidden></label><div class="uk-alert-danger" id="captcha_status" uk-alert>验证码错误</div>'
+				}
+			}); //getJSON               		
+    }); //Blur function
+    
+    $(document).on("click", "#signup", function(){
+    
+   			csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val();
+    		username = $('#id_username').val();
+    		password1 = $('#id_password1').val();
+    		password2 = $('#id_password2').val();
+    		mbu_email = $('#id_mbu_email').val();
+    		first_name = $('#id_first_name').val();
+    		last_name = $('#id_last_name').val();
+			
+			json_data={
+				'csrfmiddlewaretoken': csrfmiddlewaretoken,
+				'username':username,
+				'password1':password1,
+				'password2':password2,
+				'mbu_email':mbu_email,
+				'first_name':first_name,
+				'last_name':last_name
+			}
+			
+			$.ajax({
+            url:"{% url 'account_signup' %}",
+            type:"POST",
+            data:json_data,
+            //contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"html",
+            success:function(httpdata){
+                htmldt=JSON.parse(httpdata);
+                $("#reg_login_panel").empty();
+                document.getElementById("reg_login_panel").innerHTML = htmldt.html;
+            	},
+				error:function(){
+					alert('请求有误');
+				} 
+        	});
+     });
+});
+*/
+</script>
+{% endblock js_code %}

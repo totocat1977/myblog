@@ -1,0 +1,174 @@
+{% extends "common/old/base.html" %}
+
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!-- Carousel slide -->
+{% block ad_slides %}
+<div class="uk-position-relative uk-visible-toggle uk-light" uk-slider="clsActivated: uk-transition-active; center: true">
+    <ul class="uk-slider-items">
+        <li class="uk-width-5-6">
+            <div class="uk-panel">
+                <img data-src="holder.js/1140x150/auto/#eee:#555/text:First slide" alt="First slide">
+                <div class="uk-position-center uk-text-center">
+                    <h2 uk-slider-parallax="x: 100,-100">Heading</h2>
+                    <p uk-slider-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </li>
+        <li class="uk-width-5-6">
+            <div class="uk-panel">
+                <img data-src="holder.js/1140x150/auto/#eee:#444/text:Second slide" alt="Second slide">
+                <div class="uk-position-center uk-text-center">
+                    <h2 uk-slider-parallax="x: 100,-100">Heading</h2>
+                    <p uk-slider-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </li>
+        <li class="uk-width-5-6">
+            <div class="uk-panel">
+                <img data-src="holder.js/1140x150/auto/#eee:#333/text:Third slide" alt="Third slide">
+                <div class="uk-position-center uk-text-center">
+                    <h2 uk-slider-parallax="x: 100,-100">Heading</h2>
+                    <p uk-slider-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </li>
+        <li class="uk-width-5-6">
+            <div class="uk-panel">
+                <img data-src="holder.js/1140x150/auto/#eee:#222/text:First slide" alt="Fourth slide">
+                <div class="uk-position-center uk-text-center">
+                    <h2 uk-slider-parallax="x: 100,-100">Heading</h2>
+                    <p uk-slider-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+
+</div>
+{% endblock ad_slides %}
+<!-- End of Carousel slide -->
+
+{% block site_info_bar %}
+<div class="alert alert-info" role="alert">
+	Hello everyone! Welcome to <a href="#" class="alert-link">William's Blog</a>, hope you will enjoy here!
+</div>
+{% endblock site_info_bar %}
+
+{% block post_summary %}
+	{% for p in post_list %}
+		{% if forloop.counter|divisibleby:2 %}
+			{% show_post_right %}
+		{% else %}
+			{% show_post_left %}
+		{% endif %}
+	{% empty%}
+		<div class="well">Oppps!! There is no post by the conditions!</div>
+	{% endfor %}
+{% endblock post_summary %}
+
+{% block page_nav %}
+{% if page_obj.paginator.num_pages != 1 %}
+<div align="center">
+	<nav aria-label="Page navigation">
+		<ul class="pagination">
+			<li>
+				<a href="{% url 'articles:postpage' 1 %}" aria-label="First"><span aria-hidden="true">&laquo;</span></a>
+			</li>
+			{% if page_obj.has_previous %}
+			<li>
+				<a href="{% url 'articles:postpage' page_obj.previous_page_number %}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a>
+			</li>
+			{% else %}
+			<li class="disabled">
+				<span aria-hidden="true">&lsaquo;</span>
+			</li>
+			{% endif %}
+			
+			{% for p in post_page_navbar.page %}
+				{% if p.1 == 1 %}
+				<li class="active"><span>{{ p.0 }} <span class="sr-only">(current)</span></span></li>
+				{% elif p.0 != 0 %}
+				<li>
+					<a href="{% url 'articles:postpage' p.0 %}">{{ p.0 }}</a>
+				</li>
+
+				{% endif %}
+			{% endfor %}
+			
+			{% if page_obj.has_next %}							
+			<li>
+				<a href="{% url 'articles:postpage' page_obj.next_page_number %}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a>
+			</li>
+			{% else %}
+			<li class="disabled">
+				<span aria-hidden="true">&rsaquo;</span>
+			</li>
+			{% endif %}
+			<li>
+				<a href="{% url 'articles:postpage' post_page_navbar.last_page %}" aria-label="Last">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</div>
+{% endif %}
+{% endblock page_nav %}
+<!-- About me -->
+{% block about_me %}
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="col-xs-1 sidebar_title">
+		    <span class="glyphicon glyphicon-info-sign"></span>
+		</div>
+		<div style="padding-left:25px"><b>About Me</b></div>
+	</div>
+	<div class="panel-body">		
+		Site information:
+	</div>
+</div>
+{% endblock about_me %}
+<!-- End of about me -->
+{% block post_category %}
+	<div class="panel panel-default sidebar-1">
+		<div class="panel-heading">
+			<div class="col-xs-1 sidebar_title">
+				<span class="glyphicon glyphicon-list"></span>
+			</div>
+			<div style="padding-left:25px"><b>Post Category</b></div>
+		</div>				    
+	</div>
+	<div id="category_tree"></div>
+{% endblock post_category %}
+
+{% block post_archives %}{% get_post_archives %}{% endblock post_archives %}
+{% block tags_cloud %}{% get_tags_cloud %}{% endblock tags_cloud %}
+
+{% block js_code %}
+<script type="text/javascript" charset="utf-8">
+$(function() {
+    var json =  {% autoescape off %}{% get_category_list_sidebar %}{% endautoescape %};
+    $("img.lazy").lazyload({effect:"fadeIn"}
+    					   /*{threshold: 180}*/
+    					   /*{placeholder:"holder.js/180x180?text=Default Image"}*/
+    					   /*{skip_invisible:true}*/
+    					  );
+
+var $tree = $('#category_tree').treeview({
+          color: "#4b4c4c",
+          /*expandIcon: "glyphicon glyphicon-stop",
+          collapseIcon: "glyphicon glyphicon-unchecked",
+          nodeIcon: "glyphicon glyphicon-user",*/
+          enableLinks: true,
+          selectedBackColor: "#eeeeee",
+          selectedColor: "#36454f",
+          showTags: true,
+          data:json})
+})
+</script>
+{% endblock js_code %}
+

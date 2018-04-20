@@ -1,0 +1,162 @@
+{% extends "account/base_account.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}
+{% trans title as title %}
+{{ block.super }}
+{% endblock head_title %}
+
+{% block reg_form %}
+			<ul uk-tab>
+				<li><a href="javascript:void(0)" id="r">注册</a></li>
+				<li><a href="javascript:void(0)" id="l">登录</a></li>
+			</ul>
+			<ul class="uk-switcher" id="reg_login_form">
+				<li>
+					<div class="uk-panel uk-panel-box">
+						<h2 class="uk-heading-divider uk-h2-se">注册</h2>
+						<div id="msg" class="uk-alert-warning" uk-alert hidden>
+							<a class="uk-alert-close" uk-close></a>
+							<h4>下面信息有误：</h4>
+							<div id="errmsg"></div>
+						</div>
+						<div class="uk-width-5-6">
+							<form class="uk-form uk-form-stacked" id="signup_form" method="post" action="{% url 'account_signup' %}">
+								{% csrf_token %}
+								<div class="uk-margin">
+									<label class="uk-form-label" for="username">用户名：</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-width-medium" id="username" type="text" placeholder="">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<div class="uk-container" uk-grid>
+										<div class="uk-panel uk-width-1-2">
+											<label class="uk-form-label" for="password1">密码：</label>
+											<div class="uk-form-controls">
+												<input class="uk-input uk-form-width-medium" id="password1" type="password" placeholder="">
+											</div>								
+										</div>
+										<div class="uk-panel uk-width-1-2">
+											<label class="uk-form-label" for="password2">密码确认：</label>
+											<div class="uk-form-controls">
+												<input class="uk-input uk-form-width-medium" id="password2" type="password" placeholder="">
+											</div>								
+										</div>
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="email">电子邮件地址：</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-width-medium" id="email" type="email" placeholder="">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<div class="uk-container" uk-grid>
+										<div class="uk-panel uk-width-1-3">
+											<label class="uk-form-label" for="firstname">姓氏：</label>
+											<div class="uk-form-controls">
+												<input class="uk-input uk-form-width-medium" id="firstname" type="text" placeholder="">
+											</div>								
+										</div>
+										<div class="uk-panel uk-width-2-3">
+											<label class="uk-form-label" for="lastname">名字：</label>
+											<div class="uk-form-controls">
+												<input class="uk-input uk-form-width-medium" id="lastname" type="text" placeholder="">
+											</div>								
+										</div>
+									</div>
+								</div>
+								{% if redirect_field_value %}
+								<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+								{% endif %}
+								<div class="uk-margin-medium-top">
+									<button class="uk-button uk-button-default" type="submit">{% trans "Sign Up" %}</button>
+									<button class="uk-button uk-button-default">重置</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="uk-panel uk-panel-box">
+						<h2 class="uk-heading-divider uk-h2-se">登录</h2>
+					    {% if messages %}
+						<div id="msg" class="uk-alert-primary" uk-alert>
+							<a class="uk-alert-close" uk-close></a>
+							<h4>信息：</h4>
+							<div id="errmsg">
+								<ul>
+								{% for message in messages %}
+								<li>{{ message }}</li>
+								{% endfor %}
+								</ul>							
+							</div>
+						</div>
+						{% endif %}
+						<div class="uk-alert-primary" uk-alert>
+							如果你没有我们网站的帐号，请点击<a href="{% url 'account_signup' %}"><b>注册</b></a>帐号。
+						</div>
+						<div class="uk-width-5-6">
+							<form class="uk-form uk-form-stacked" method="POST" action="{% url 'account_login' %}">
+							  {% csrf_token %}
+								<div class="uk-margin">
+									<label class="uk-form-label" for="{{ form.login.id_for_label}}">用户名/邮箱：</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-width-medium" id="login" name="login" type="text" autofocus="autofocus" placeholder="" required id="id_login">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="{{ form.password.id_for_label }}">密码：</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-width-medium" id="password" name="password" type="password" placeholder="" required id="id_password">
+									</div>								
+								</div>
+								<div class="uk-margin">
+									<label><input class="uk-checkbox" type="checkbox" id="id_remember" name="remember"> 记住我的登陆信息</label>
+								</div>
+								{% if redirect_field_value %}
+								<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+								{% endif %}
+								<div class="uk-margin-medium-top">
+									<button class="uk-button uk-button-default" type="submit">登录</button>
+									<a class="uk-button uk-button-default" href="{% url 'account_reset_password' %}">忘记密码？</a>
+								</div>
+								{% get_providers as socialaccount_providers %}
+								{% if socialaccount_providers %}
+								<div class="uk-margin">
+									<h4>可以使用下列第三方帐号进行登陆：</h4>
+									<div class="uk-panel">
+									  <ul class="uk-subnav uk-subnav-divider">
+										{% include "account/provider_list.html" with process="login" %}
+									  </ul>									
+									</div>
+								</div>
+								{% providers_media_js %}
+								{% endif %}			
+							</form>
+						</div>
+					</div>
+				</li>
+			</ul>
+{% endblock %}
+{% block js_code %}
+<script type="text/javascript">
+/*
+function initFunc()
+{
+	UIkit.tab('.uk-tab').show({{ reg_login_switcher }});
+}
+$(document).ready(initFunc);
+
+$("#r").click(function() {
+	$('title').html("{% trans 'Signup' %}")
+});
+$("#l").click(function () {
+	$('title').html("{% trans 'Sign In' %}")
+});
+*/
+</script>
+{% endblock js_code %}

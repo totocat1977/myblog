@@ -1,0 +1,50 @@
+{% extends "common/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block top_navbar %}
+<div class="tm-toolbar uk-clearfix uk-visible@s">
+	<div class="uk-float-left">
+		<div class="uk-panel">
+			<ul class="uk-subnav uk-subnav-divider" uk-margin>
+				<li><a href="#">地图</a></li>
+				<li><a href="#">日志</a></li>
+				<li><a href="#">关于</a></li>
+			</ul>
+		</div>
+	</div>
+	{% if user.is_authenticated %}
+	<div class="uk-float-right">
+		<div class="uk-panel">
+			<ul class="uk-subnav uk-subnav-divider" uk-margin>
+				<li>你好，<a href="#">{{ username }}</a></li>
+				<li><a href="{% url 'account_email' %}">修改邮箱</a></li>
+				<li><a href="{% url 'account_logout' %}">登出</a></li>
+			</ul>
+		</div>
+	</div>
+	{% else %}
+	<div class="uk-float-right">
+		<div class="uk-panel">
+			<ul class="uk-subnav uk-subnav-divider">
+				<li>你好，欢迎来到我的网站！</li>
+				<li><a href="{% url 'account_login' %}">个人中心</a></li>
+			</ul>
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endblock top_navbar %}
+
+
+{% block content %}
+<div style="text-align:center;margin-top:100px;">
+	<img src="{% static 'images/reg6.jpg' %}" style="width:500px" alt="register">
+</div>	
+{% endblock content %}
+
+{% block body %}
+{% trans "uk-width-3-5" as left_side_width %}
+{% trans "uk-width-medium-2-5" as right_side_width %}
+{{ block.super }}
+{% endblock body %}

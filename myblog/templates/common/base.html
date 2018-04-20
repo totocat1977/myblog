@@ -1,0 +1,83 @@
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+{% block head_title %}
+{% include 'common/head.html' %}
+{% endblock head_title %}
+</head>
+<body class="tm-isblog">
+<div class="uk-container uk-container-center">
+	<!-- Page Header -->
+	<div class="tm-header">
+		<!-- Top Navbar -->
+		{% block top_navbar %}{% endblock top_navbar %}
+		<!-- End of Top Navbar -->
+		<!-- Category Navbar -->
+		{% include 'common/category.html' %}
+		<!-- End of Category Navbar -->
+	</div>
+	<!-- Carousel slide -->
+	{% block ad_slides %}
+	{% endblock ad_slides %}
+	<!-- End of Carousel slide -->
+	<!-- body -->
+	{% block body %}
+	<div class="tm-middle uk-grid-medium" uk-grid-parallax="translate:50">
+		<!-- Left side -->
+		<div class="tm-main {{ left_side_width }}">
+			<main class="tm-content">
+				<div uk-grid>
+					<div class="uk-width-1-1">
+						{% block category_navbar %}
+						{% endblock category_navbar %}						
+						<!-- Post Start -->
+						{% block content %}
+						{% endblock content %}
+						<!-- End of Post -->
+					</div>
+				</div>
+				<!-- Page navigation -->
+				{% block page_nav %}
+				{% endblock page_nav %}
+				<!-- End of Page navigation -->
+			</main>
+		</div>
+		<!-- Right side -->
+		<aside class="{{ right_side_width }}">
+			<!-- About me -->
+			{% block about_me %}
+			{% endblock about_me %}
+			<!-- End of about me -->
+			<!-- Post Category -->
+			{% block post_category %}
+			{% endblock post_category %}
+			<!-- End of Post Category -->
+			<!-- Post Archives -->
+			{% block post_archives %}{% endblock post_archives %}
+			<!-- End of Post Archives -->
+			<!-- Tags Cloud -->	
+			{% block tags_cloud %}{% endblock tags_cloud %}
+			<!-- End of Tags Cloud -->
+			<!-- Link sites -->
+			{% block link_sites %}{% endblock link_sites %}
+			<!-- End of Link sites -->
+			<!-- Register Form -->
+			{% block reg_form %}{% endblock reg_form %}
+			<!-- End of Register Form -->
+		</aside>
+	</div>
+	{% endblock body %}
+	<br/>
+	<footer id="tm-footer" class="tm-footer tm-footer-margin-top">
+		<div class="uk-panel uk-panel-space uk-text-center">
+			<a href="#" class="tm-totop-scroller uk-link-reset" uk-totop uk-scroll></a>
+			<div class="uk-panel"> William's Blog, Built with Django & Uikit</div>
+		</div>
+	</footer>
+</div>
+{% block js_code %}{% endblock js_code %}
+</body>
+</html>

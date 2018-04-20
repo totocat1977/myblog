@@ -1,0 +1,87 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-05 23:22+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/admin/index.html:20
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: templates/admin/index.html:31
+msgid "Add"
+msgstr ""
+
+#: templates/admin/index.html:37
+msgid "Change"
+msgstr ""
+
+#: templates/admin/index.html:47
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: templates/admin/index.html:55
+msgid "Recent actions"
+msgstr ""
+
+#: templates/admin/index.html:56
+msgid "My actions"
+msgstr ""
+
+#: templates/admin/index.html:60
+msgid "None available"
+msgstr ""
+
+#: templates/admin/index.html:74
+msgid "Unknown content"
+msgstr ""
+
+#: user/forms.py:8
+msgid "Password"
+msgstr ""
+
+#: user/forms.py:9
+msgid "Password Repeat"
+msgstr "确认密码"
+
+#: user/forms.py:15
+msgid "Avatar"
+msgstr ""
+
+#: user/forms.py:18
+msgid "Your login account name."
+msgstr ""
+
+#: user/forms.py:19
+msgid "Your first name."
+msgstr ""
+
+#: user/forms.py:20
+msgid "Your last name"
+msgstr ""
+
+#: user/forms.py:21
+msgid "E-mail address"
+msgstr ""
+
+#: user/forms.py:25
+msgid "This writer's name is too long."
+msgstr ""
+
+#: articles/forms.py:15
+msgid "Input your comment"
+msgstr "请输入你的评论"

@@ -1,0 +1,190 @@
+{% extends "account/base_account.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}
+{% trans "个人中心" as title %}
+{{ block.super }}
+{% endblock head_title %}
+
+{% block reg_form %}
+	<h2 class="uk-heading-divider uk-h2-se">{% trans "Sign Up" %}</h2>
+    {% if messages %}
+	<div id="msg" class="uk-alert-primary" uk-alert>
+		<a class="uk-alert-close" uk-close></a>
+		<h4>信息：</h4>
+		<div id="errmsg">
+			<ul>
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% endif %}
+	<div class="uk-alert-primary" uk-alert>
+		如果你已经注册了我们网站的帐号，请点击<a href="{{ login_url }}"><b>登陆</b></a>。
+	</div>
+	<div class="uk-width-5-6">
+		<!--<form class="uk-form uk-form-stacked" id="signup_form" method="post" action="{% url 'account_signup' %}">-->
+		<form class="uk-form uk-form-stacked" id="signup_form">
+			{% csrf_token %}
+ 			<div class="uk-margin">
+				{{ form.username.errors }}
+				<label class="uk-form-label" for="{{ form.username.auto_id }}">{{ form.username.label }}</label>
+				<div class="uk-form-controls">{{ form.username }}</div>
+			</div>
+			<div class="uk-margin">
+				<div class="uk-container" uk-grid>
+					<div class="uk-panel uk-width-1-2">
+						{{ form.password1.errors }}
+						<label class="uk-form-label" for="{{ form.password1.auto_id }}">{{ form.password1.label }}</label>
+						<div class="uk-form-controls">{{ form.password1 }}</div>
+					</div>
+					<div class="uk-panel uk-width-1-2">
+						{{ form.password2.errors }}
+						<label class="uk-form-label" for="{{ form.password2.auto_id }}">{{ form.password2.label }}</label>
+						<div class="uk-form-controls">{{ form.password2 }}</div>
+					</div>
+				</div>
+			</div>
+			<div class="uk-margin">
+				{{ form.mbu_email.errors }}
+				<label class="uk-form-label" for="{{ form.mbu_email.auto_id }}">{{ form.mbu_email.label }}</label>
+				<div class="uk-form-controls">{{ form.mbu_email }}</div>
+			</div>
+			<div class="uk-margin">
+				<div class="uk-container" uk-grid>
+					<div class="uk-panel uk-width-1-3">
+						{{ form.last_name.errors }}
+						<label class="uk-form-label" for="{{ form.last_name.auto_id }}">{{ form.last_name.label }}</label>
+						<div class="uk-form-controls">{{ form.last_name }}</div>
+					</div>
+					<div class="uk-panel uk-width-2-3">
+						{{ form.first_name.errors }}
+						<label class="uk-form-label" for="{{ form.first_name.auto_id }}">{{ form.first_name.label }}</label>
+						<div class="uk-form-controls">{{ form.first_name }}</div>
+					</div>
+				</div>
+			</div>
+			<div class="uk-margin">
+				<div class="uk-container" uk-grid>
+					<div class="uk-panel uk-width-2-3">
+					   <label class="uk-form-label">验证码</label>
+						<div class="uk-form-controls">
+							<img src="{{ captcha.image_url }}" alt="captcha" class="captcha" id="captcha" style="width:80px;height:35px;cursor:pointer"/>&nbsp;&nbsp;
+							<input class="uk-input uk-form-width-small" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_1" name="captcha_1" type="text" placeholder="Code" />
+							<input id="id_captcha_0" name="captcha_0" type="hidden" value="{{ captcha.hashkey }}" />
+						</div>
+					</div>
+					<div class="uk-panel uk-width-1-3" id="captch_msg"></div>
+				</div>
+			</div>
+			{% if redirect_field_value %}
+			<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+			{% endif %}
+			<div class="uk-margin-medium-top">
+				<button class="uk-button uk-button-default" id="signup">{% trans "Sign Up" %}</button>
+				<button class="uk-button uk-button-default">重置</button>
+			</div>
+		</form>
+	</div>
+{% endblock reg_form %}
+{% block js_code %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#reg").click(function(){
+        $.ajax({
+            url:"{% url 'account_signup' %}",
+            type:"GET",
+            data:{},
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"html",
+            success:function(httpdata){
+                //alert(httpdata);
+                htmldt=JSON.parse(httpdata);
+                $("#reg_login_panel").empty();
+                document.getElementById("reg_login_panel").innerHTML = htmldt.html;
+					//add click function to captcha image
+            },
+			error:function(){
+				alert('请求有误');
+			} 
+        });
+    });
+/*   
+   $("#signup").click(function(){
+   		$.ajax({
+   			url:"{% url 'account_signup' %}",
+   			type:"POST",
+   			data:
+   			
+    });
+*/
+
+    $(document).on("click", "#captcha", function(){
+			//console.log('click');
+			$.getJSON("/captcha/refresh/", function(result){
+			 $(".captcha").attr('src', result['image_url']);
+			 $("#id_captcha_0").val(result['key']);
+			 $("#id_captcha_1").val('');
+			 $("#captch_msg").empty();
+			});                		
+    }); //Click function
+    
+    //add auto checking function for captcha when blur
+    $(document).on("blur", "#id_captcha_1", function(){
+			json_data={
+				'response':$('#id_captcha_1').val(),
+				'hashkey':$('#id_captcha_0').val()
+			}
+			$.getJSON("{% url 'user:ajax_val' %}", json_data, function(data){ //ajax发送            
+				$("#captch_msg").empty();
+				if(data['status']){ //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+					document.getElementById("captch_msg").innerHTML = '<label class="uk-form-label" hidden></label><div class="uk-alert-primary" id="captcha_status" uk-alert>验证码正确</div>'
+				}else{
+					document.getElementById("captch_msg").innerHTML = '<label class="uk-form-label" hidden></label><div class="uk-alert-danger" id="captcha_status" uk-alert>验证码错误</div>'
+				}
+			}); //getJSON               		
+    }); //Blur function
+    
+    $(document).on("click", "#signup", function(){
+    
+   			csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val();
+    		username = $('#id_username').val();
+    		password1 = $('#id_password1').val();
+    		password2 = $('#id_password2').val();
+    		mbu_email = $('#id_mbu_email').val();
+    		first_name = $('#id_first_name').val();
+    		last_name = $('#id_last_name').val();
+			
+			json_data={
+				'csrfmiddlewaretoken': csrfmiddlewaretoken,
+				'username':username,
+				'password1':password1,
+				'password2':password2,
+				'mbu_email':mbu_email,
+				'first_name':first_name,
+				'last_name':last_name
+			}
+			
+			$.ajax({
+            url:"{% url 'account_signup' %}",
+            type:"POST",
+            data:json_data,
+            //contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType:"html",
+            success:function(httpdata){
+                htmldt=JSON.parse(httpdata);
+                $("#reg_login_panel").empty();
+                document.getElementById("reg_login_panel").innerHTML = htmldt.html;
+            	},
+				error:function(){
+					alert('请求有误');
+				} 
+        	});
+     });
+});
+</script>
+{% endblock js_code %}
